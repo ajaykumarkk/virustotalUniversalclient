@@ -67,7 +67,7 @@ def checkVThash(lines, apikeys, checknotvt):
 		waitime = (60 - len(apikeys) * 4)
 	else:
 		waitime = 3
-	csv_handle = open('output_hashes.csv', 'w')
+	csv_handle = open('output_hashes.csv', 'a+')
 	invt = []
 	flag = 0
 	el_flag = True
@@ -143,7 +143,7 @@ def VTfileupload(files, apikeys):
 		waitime = (60 - len(apikeys) * 4)
 	else:
 		waitime = 3
-	csv_handle = open('file_upload.csv', 'a')
+	csv_handle = open('file_upload.csv', 'a+')
 	flag = 0
 	el_flag = True
 	print("Total no.of paths loaded is :" + str(len(lines)))
@@ -180,11 +180,12 @@ def VTfileupload(files, apikeys):
 						sample_info["scan_id"] = response_dict.get("scan_id")
 						sample_info["verbose_msg"] = response_dict.get("verbose_msg")
 						csv_handle.write(
-							path + "," + str(sample_info["verbose_msg"]) + "," + str(sample_info["scan_id"]))
+							files[path] + "," + str(sample_info["verbose_msg"]) + "," + str(sample_info["scan_id"])+"\n")
 						print(sample_info)
+
 					else:
 						print("Unknown Error for path " + path)
-						unprocessed.append(path)
+						unprocessed.append(files(path))
 				# print("Api Key has ran 4 times.. Changing APi Key..\n")
 				time.sleep(1)
 			print("WaitTime is " + str(waitime) + " Seconds")
