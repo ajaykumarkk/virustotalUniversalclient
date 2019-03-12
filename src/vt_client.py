@@ -212,7 +212,7 @@ def getVTip(lines,apikeys):
 		waitime = (60 - len(apikeys) * 4)
 	else:
 		waitime = 3
-	csv_handle = open('url_output.csv', 'a+')
+	csv_handle = open('ip_output.csv', 'a+')
 	flag = 0
 	el_flag = True
 	print("Total no.of ips loaded is :" + str(len(lines)))
@@ -251,10 +251,10 @@ def getVTip(lines,apikeys):
 								sample_info["detected_urls"] = response_dict.get("detected_urls")
 								scores=[]
 								for i in sample_info["detected_urls"]:
-									scores.append(tuple(i["positives"],i["total"]))
+									scores.append((i["positives"],i["total"]))
 								sorted(scores, key=getKey)
-								csv_handle.write(ip + "," + str(scores) + "\n")
-							print(sample_info)
+								print(ip + "," + str(scores) + "\n")
+							#print(scores)
 						except Exception as e:
 							print(e)
 					else:
