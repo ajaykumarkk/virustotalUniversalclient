@@ -5,6 +5,7 @@ import shutil
 with open('src//apikeys.txt', 'r') as f:
 	apikeys = [line.rstrip('\n') for line in open('src//apikeys.txt')]
 api_keys_list=chunkIt(apikeys,2)
+'''
 files_path = [os.path.abspath("file_upload\\"+x) for x in os.listdir("file_upload")]
 files={}
 for i in files_path:
@@ -40,4 +41,7 @@ f=open('fileuploadhash.txt','a+')
 for i in toscan_f.keys():
 	f.write(i+"\n")
 f.close()
+'''
 
+ips=open('ip.txt','r').read().split('\n')
+getVTip(ips,apikeys)
