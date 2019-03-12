@@ -14,10 +14,9 @@ for i in files_path:
 print(files)
 
 to_scan , scanned = checkVThash(files.values(),api_keys_list[0],1)
-
+toscan_f={}
 if len(to_scan) > 0:
 	print("Uploading......")
-	toscan_f={}
 	for p,h in files.items():
 		if h in to_scan:
 			toscan_f[h] = p
@@ -25,5 +24,5 @@ if len(to_scan) > 0:
 
 f=open('fileuploadhash.txt','a+')
 for i in toscan_f.keys():
-	f.write(i)
+	f.write(i+"\n")
 f.close()
