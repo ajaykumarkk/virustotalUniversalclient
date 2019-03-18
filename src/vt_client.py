@@ -329,7 +329,7 @@ def getVTurl(lines,apikeys):
 						except Exception as e:
 							print(e)
 					else:
-						print("Unknown Error for path " + url)
+						print("Unknown Error for url " + url)
 						unprocessed.append(url)
 				# print("Api Key has ran 4 times.. Changing APi Key..\n")
 				time.sleep(1)
