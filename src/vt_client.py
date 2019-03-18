@@ -54,6 +54,10 @@ def getdata(data, apikey, type):
 			url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
 			params = {'apikey': apikey, 'ip': data}
 			r = requests.get(url, params=params)
+		elif type == 'url':
+			url = 'https://www.virustotal.com/vtapi/v2/url/report'
+			params = {'apikey': apikey, 'resource': data , 'scan':1}
+			r = requests.get(url, params=params)
 		if r.status_code == 403:
 			return "Forbidden. You don't have enough privileges to make the request"
 		elif r.status_code == 204:
@@ -242,7 +246,7 @@ def getVTip(lines,apikeys):
 							unprocessed.append(ip)
 							break
 					elif isinstance(response_dict, dict) and response_dict.get("response_code") == 0:
-						print("Not in VT for path :" + str(ip))
+						print("Not in VT for ip :" + str(ip))
 					elif isinstance(response_dict, dict) and response_dict.get("response_code") == -2:
 						print("In queue for scanning")
 					elif isinstance(response_dict, dict) and response_dict.get("response_code") == 1:
@@ -268,8 +272,74 @@ def getVTip(lines,apikeys):
 				time.sleep(1)
 	except GetOutOfLoop:
 		csv_handle.close()
-	print("unprocessed paths " + str(unprocessed))
+	print("unprocessed ips " + str(unprocessed))
 	with open('file_unprocessed.txt', 'w') as f:
 		for item in unprocessed:
 			f.write("%s\n" % item)
 
+def getVTurl(lines,apikeys):
+	if len(apikeys) <= 14:
+		waitime = (60 - len(apikeys) * 4)
+	else:
+		waitime = 3
+	csv_handle = open('url_output.csv', 'a+')
+	flag = 0
+	el_flag = True
+	print("Total no.of url's loaded is :" + str(len(lines)))
+	urls = iter(lines)
+	unprocessed = []
+	count = 0
+	try:
+		while el_flag:
+			for api_key in apikeys:
+				for i in range(0, 4):
+					response_dict = {}
+					path = ""
+					count = count + 1
+					try:  # getting hashes from iterator
+						url = next(urls)
+					except:
+						print("End of list")
+						el_flag = False
+						raise GetOutOfLoop
+					response_dict = getdata(url, api_key, 'url')
+					sample_info = {}
+					if isinstance(response_dict, str):
+						# print("request error for path :" + path)
+						print("-->" + response_dict + " for path " + url)
+						if response_dict == "Request rate limit exceeded":
+							print("Changing api key..")
+							unprocessed.append(url)
+							break
+					elif isinstance(response_dict, dict) and response_dict.get("response_code") == 0:
+						print("Not in VT for ip :" + str(url))
+					elif isinstance(response_dict, dict) and response_dict.get("response_code") == -2:
+						print("In queue for scanning")
+					elif isinstance(response_dict, dict) and response_dict.get("response_code") == 1:
+						try:
+							pos=""
+							tot=""
+							if response_dict.get("positives") is not None:
+								pos = response_dict.get("positives")
+								tot = response_dict.get("total")
+								csv_handle.write(url + ","+ str(pos) +","+ str(tot))
+								csv_handle.write('\n')
+							else:
+								unprocessed.append(url)
+						except Exception as e:
+							print(e)
+					else:
+						print("Unknown Error for path " + url)
+						unprocessed.append(url)
+				# print("Api Key has ran 4 times.. Changing APi Key..\n")
+				time.sleep(1)
+			print("WaitTime is " + str(waitime) + " Seconds")
+			for i in range(1, waitime):
+				print(i, end="\r")
+				time.sleep(1)
+	except GetOutOfLoop:
+		csv_handle.close()
+	print("unprocessed url " + str(unprocessed))
+	with open('url_unprocessed.txt', 'a+') as f:
+		for item in unprocessed:
+			f.write("%s\n" % item)

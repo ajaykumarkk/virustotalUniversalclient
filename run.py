@@ -43,5 +43,10 @@ for i in toscan_f.keys():
 f.close()
 '''
 
+'''
 ips=open('ip.txt','r').read().split('\n')
 getVTip(ips,apikeys)
+'''
+
+urls=open('url.txt','r').read().split('\n')
+getVTurl(urls,apikeys)
