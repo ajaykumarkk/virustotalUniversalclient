@@ -52,6 +52,7 @@ getVTip(ips,apikeys)
 urls=open('url.txt','r').read().split('\n')
 getVTurl(urls,apikeys)
 """
+
 hashes=open('hashes.txt','r').read().split('\n')
 if len(hashes) > 0:
 	checkVThash(hashes,apikeys,0)
